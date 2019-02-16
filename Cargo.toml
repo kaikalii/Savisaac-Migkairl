@@ -1,0 +1,10 @@
+[package]
+name = "savisaac_migkairl"
+version = "0.1.0"
+authors = ["Kai Schmidt <kaikaliischmidt@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+yew = "*"
+lazy_static = "*"
+rand = {version ="*", features = ["stdweb"]}
