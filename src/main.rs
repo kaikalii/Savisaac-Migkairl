@@ -195,9 +195,11 @@ impl Trivia {
                         })
                     }
                     <div class="center",>
-                        <button class="button answered",type="button", onclick=|_| Msg::SetState(State::Trivia(Trivia::random())),>
+                        <button class="button answered",type="button", onclick=|_|
+                            Msg::SetState(State::Trivia(Trivia::random())),>
                             {"This question was already answered"}
                         </button>
+
                         <button class="button home", type="button", onclick=|_| Msg::SetState(State::Home),>
                             {"Home"}
                         </button>
@@ -206,19 +208,26 @@ impl Trivia {
             }
             ShortAnswer { question, validate } => {
                 let entry = model.entry.clone();
+                let submission = Arc::new(Box::new(move || Msg::SetState({ validate(&entry) })));
+                let submission2 = submission.clone();
                 html! {
                     <div class="question font",>
                         {question}
                     </div>
-                    <form onsubmit="return false",>
+
+                    <form onsubmit=|_| submission(),>
                         <input class="entry", type="text", oninput=|s| Msg::Entry(s.value),></input>
                     </form>
-                    <button class="button", type="button", onclick=|_| Msg::SetState({
-                        validate(&entry)
-                    }),>{"Submit"}</button>
-                    <button class="button answered", type="button", onclick=|_| Msg::SetState(State::Trivia(Trivia::random())),>{
-                        "This question was already answered"}
+
+                    <button class="button", type="button", onclick=|_| submission2(),>
+                        {"Submit"}
                     </button>
+
+                    <button class="button answered", type="button", onclick=|_|
+                        Msg::SetState(State::Trivia(Trivia::random())),>
+                        {"This question was already answered"}
+                    </button>
+
                     <button class="button home", type="button", onclick=|_| Msg::SetState(State::Home),>
                         {"Home"}
                     </button>
@@ -292,7 +301,9 @@ impl Renderable<Model> for Model {
                         })
                     }
                     <div class="center",>
-                        <button class="button home", type="button", onclick=|_| Msg::SetState(State::Home),>{"Home"}</button>
+                        <button class="button home", type="button", onclick=|_| Msg::SetState(State::Home),>
+                            {"Home"}
+                        </button>
                     </div>
                 }
             }
@@ -326,6 +337,17 @@ impl Renderable<Model> for Model {
                             },
                             Miguel => {
                                 let entry = self.entry.clone();
+                                let submission = Arc::new(Box::new(move || Msg::SetState({
+                                    if entry.trim().parse::<f32>() == Ok(1.0) {
+                                        State::GiveDrinks(5)
+                                    } else {
+                                        State::Drink {
+                                            correct: false,
+                                            count: 3
+                                        }
+                                    }
+                                })));
+                                let submission2 = submission.clone();
                                 html! {
                                     <div class="question font",>
                                         { "In the circuit shown below R2 = 2 kΩ." }
@@ -333,21 +355,12 @@ impl Renderable<Model> for Model {
                                         { "Determine the value of R1 so that the closed-loop gain, G = vO / vS = 3." }
                                     </div>
                                     <div class="center",><img class="image", src="op_amp.png",></img></div>
-                                    <form onsubmit="return false",>
+                                    <form onsubmit=|_| submission(),>
                                         <div class="center",>
                                             <input class="entry center", type="text", oninput=|s| Msg::Entry(s.value),></input>{"kΩ"}
                                         </div>
                                     </form>
-                                    <button class="button center", type="button", onclick=|_| Msg::SetState({
-                                        if entry.trim().parse::<f32>() == Ok(1.0) {
-                                            State::GiveDrinks(5)
-                                        } else {
-                                            State::Drink {
-                                                correct: false,
-                                                count: 3
-                                            }
-                                        }
-                                    }),>{"Submit"}</button>
+                                    <button class="button center", type="button", onclick=|_| submission2(),>{"Submit"}</button>
                                 }
                             },
                             Savannah => html! {
