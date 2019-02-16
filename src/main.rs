@@ -79,7 +79,7 @@ lazy_static! {
                 ("Snake", 4),
                 ("Bear", 1),
                 ("Swarm of Fleas", 4),
-                ("Veloceraptor", 5)
+                ("Velociraptor", 5)
             ],
         ),
         Trivia::multiple_choice(
@@ -133,9 +133,9 @@ lazy_static! {
         Trivia::multiple_choice("Who is completely and uterly alone?", {
             let kai_state = State::generic(|| {
                 html! {
-                    <div>{"Give Kai 5 drinks to help dull his need for companionship."}</div>
-                    <div>
-                        <button type="button", onclick=|_| Msg::SetState(State::Home),>{"Home"}</button>
+                    <div class="question font",>{"Give Kai 5 drinks to help dull his need for companionship."}</div>
+                    <div class="center",>
+                        <button class="button home", type="button", onclick=|_| Msg::SetState(State::Home),>{"Home"}</button>
                     </div>
                 }
             });
@@ -177,26 +177,29 @@ impl Trivia {
     }
     fn html(&self, model: &Model) -> Html<Model> {
         use Trivia::*;
-        let main = match self.clone() {
+        match self.clone() {
             MultipleChoice { question, choices } => {
                 html! {
-                    <div>
+                    <div class="question font center",>
                         {question}
                     </div>
                     {
                         for choices.into_iter().map(|(answer, state)| {
                             html!{
-                                <div>
-                                    <button type="button", onclick=|_| Msg::SetState(state.clone()),>
+                                <div class="center",>
+                                    <button class="button", type="button", onclick=|_| Msg::SetState(state.clone()),>
                                         {answer}
                                     </button>
                                 </div>
                             }
                         })
                     }
-                    <div>
-                        <button type="button", onclick=|_| Msg::SetState(State::Trivia(Trivia::random())),>{
-                            "This question was already answered"}
+                    <div class="center",>
+                        <button class="button answered",type="button", onclick=|_| Msg::SetState(State::Trivia(Trivia::random())),>
+                            {"This question was already answered"}
+                        </button>
+                        <button class="button home", type="button", onclick=|_| Msg::SetState(State::Home),>
+                            {"Home"}
                         </button>
                     </div>
                 }
@@ -204,30 +207,23 @@ impl Trivia {
             ShortAnswer { question, validate } => {
                 let entry = model.entry.clone();
                 html! {
-                    <div>
+                    <div class="question font",>
                         {question}
                     </div>
                     <form onsubmit="return false",>
-                        <input type="text", oninput=|s| Msg::Entry(s.value),></input>
+                        <input class="entry", type="text", oninput=|s| Msg::Entry(s.value),></input>
                     </form>
-                    <button type="button", onclick=|_| Msg::SetState({
+                    <button class="button", type="button", onclick=|_| Msg::SetState({
                         validate(&entry)
                     }),>{"Submit"}</button>
-                    <div>
-                        <button type="button", onclick=|_| Msg::SetState(State::Trivia(Trivia::random())),>{
-                            "This question was already answered"}
-                        </button>
-                    </div>
+                    <button class="button answered", type="button", onclick=|_| Msg::SetState(State::Trivia(Trivia::random())),>{
+                        "This question was already answered"}
+                    </button>
+                    <button class="button home", type="button", onclick=|_| Msg::SetState(State::Home),>
+                        {"Home"}
+                    </button>
                 }
             }
-        };
-        html! {
-            <div>
-            {main}
-            </div>
-            <div>
-                <button type="button", onclick=|_| Msg::SetState(State::Home),>{"Home"}</button>
-            </div>
         }
     }
 }
@@ -268,32 +264,35 @@ impl Renderable<Model> for Model {
         match &self.state {
             State::Generic(f) => f(),
             State::Home => html! {
-                <div>
-                    <h1>{"Savisaac Migkairl!"}</h1>
+                <div class="center",>
+                    <h1 class="title font",>{"Savisaac Migkairl!"}</h1>
                 </div>
-                <div>
-                    <button type="button", onclick=|_| Msg::SetState(State::Trivia(Trivia::random())),>{"Trivia"}</button>
+                <div class="center",>
+                    <button type="button", class="button", onclick=|_| Msg::SetState(State::Trivia(Trivia::random())),>{"Trivia"}</button>
                 </div>
-                <div>
-                    <button type="button", onclick=|_| Msg::SetState(State::ChoosePerson),>{"Unique"}</button>
+                <div class="center",>
+                    <button type="button", class="button", onclick=|_| Msg::SetState(State::ChoosePerson),>{"Unique"}</button>
                 </div>
+                <div class="center",><img class="image", src="savisaacmigkairl.png",></img></div>
             },
             State::Trivia(trivia) => trivia.html(self),
             State::ChoosePerson => {
                 use Person::*;
                 html! {
-                    <div>{"Who are you?"}</div>
+                    <div class="question font center",>
+                        {"Who are you?"}
+                    </div>
                     {
                         for vec![Carl, Isaac, Kai, Miguel, Savannah, Guest].into_iter().map(|person| {
                             html! {
-                                <div>
-                                    <button type="button", onclick=|_| Msg::SetState(State::Unique(person)),>{person}</button>
+                                <div class="center",>
+                                    <button class="button", type="button", onclick=|_| Msg::SetState(State::Unique(person)),>{person}</button>
                                 </div>
                             }
                         })
                     }
-                    <div>
-                        <button type="button", onclick=|_| Msg::SetState(State::Home),>{"Home"}</button>
+                    <div class="center",>
+                        <button class="button home", type="button", onclick=|_| Msg::SetState(State::Home),>{"Home"}</button>
                     </div>
                 }
             }
@@ -303,18 +302,22 @@ impl Renderable<Model> for Model {
                     <div>{
                         match person {
                             Carl => html! {
-                                <div>{"Escuzi! Bopity boopy!"}</div>
-                                <div>{"Take 3 drinks while doing an Italian gesture with your free hand."}</div>
+                                <div class="question font",>
+                                    {"Escuzi! Bopity boopy!"}
+                                    <br></br>
+                                    {"Take 3 drinks while doing an Italian gesture with your free hand."}
+                                </div>
+                                <div class="center",><img class="image", src="Flag_of_Italy.svg",></img></div>
                             },
                             Isaac => html! {
-                                <div>{
+                                <div class="question font",>{
                                     "Do some pushups, then take a number of drinks \
                                      equal to forty minus how many pushups you did. \
                                      If you do more than forty, you may give out drinks."
                                 }</div>
                             },
                             Kai => html! {
-                                <div>{
+                                <div class="question font",>{
                                     "Have a conversation with Miguel in Spanish. \
                                      Miguel may decide how many drinks you take based \
                                      on how good your pronunciation, grammar, and \
@@ -324,14 +327,18 @@ impl Renderable<Model> for Model {
                             Miguel => {
                                 let entry = self.entry.clone();
                                 html! {
-                                    <div>{ "In the circuit shown below R2 = 2 kΩ." }</div>
-                                    <div>{ "Assume that the op-amp is ideal." }</div>
-                                    <div>{ "Determine the value of R1 so that the closed-loop gain, G = vO / vS = 3." }</div>
-                                    <div><img src="op_amp.png",></img></div>
+                                    <div class="question font",>
+                                        { "In the circuit shown below R2 = 2 kΩ." }
+                                        { "Assume that the op-amp is ideal." }
+                                        { "Determine the value of R1 so that the closed-loop gain, G = vO / vS = 3." }
+                                    </div>
+                                    <div class="center",><img class="image", src="op_amp.png",></img></div>
                                     <form onsubmit="return false",>
-                                        <input type="text", oninput=|s| Msg::Entry(s.value),></input>
+                                        <div class="center",>
+                                            <input class="entry center", type="text", oninput=|s| Msg::Entry(s.value),></input>{"kΩ"}
+                                        </div>
                                     </form>
-                                    <button type="button", onclick=|_| Msg::SetState({
+                                    <button class="button center", type="button", onclick=|_| Msg::SetState({
                                         if entry.trim().parse::<f32>() == Ok(1.0) {
                                             State::GiveDrinks(5)
                                         } else {
@@ -344,7 +351,7 @@ impl Renderable<Model> for Model {
                                 }
                             },
                             Savannah => html! {
-                                <div>{
+                                <div class="question font",>{
                                     "Come up with familial relations that relate all of the \
                                      other players, i.e. Miguel is Carl's dad. For the rest \
                                      of the game, other players must speak to eachother as if \
@@ -353,39 +360,39 @@ impl Renderable<Model> for Model {
                                 }</div>
                             },
                             Guest => html! {
-                                <div>{
+                                <div class="question font",>{
                                     "The five founders of Savisaac Migkairl stand and look \
                                      down on you while you take 5 drinks."
                                 }</div>
                             }
                         }
                     }</div>
-                    <div>
-                        <button type="button", onclick=|_| Msg::SetState(State::Home),>{"Home"}</button>
+                    <div class="center",>
+                        <button class="button home", type="button", onclick=|_| Msg::SetState(State::Home),>{"Home"}</button>
                     </div>
                 }
             }
             State::Drink { correct, count } => {
                 html! {
-                    <div>
+                    <div class="question center font",>
                         {if *correct {
                             format!("Correct! Take only {} drink{}!", count, if *count == 1 { "" } else{ "s" })
                         } else {
                             format!("Wrong! Take {} drink{}!", count, if *count == 1 { "" } else{ "s" })
                         }}
                     </div>
-                    <div>
-                        <button type="button", onclick=|_| Msg::SetState(State::Home),>{"Home"}</button>
+                    <div class="center",>
+                        <button class="button home", type="button", onclick=|_| Msg::SetState(State::Home),>{"Home"}</button>
                     </div>
                 }
             }
             State::GiveDrinks(count) => {
                 html! {
-                    <div>
+                    <div class="question center font",>
                         {format!("Correct! Give out {} drink{}!", count, if *count == 1 { "" } else { "s" })}
                     </div>
-                    <div>
-                        <button type="button", onclick=|_| Msg::SetState(State::Home),>{"Home"}</button>
+                    <div class="center",>
+                        <button class="button home", type="button", onclick=|_| Msg::SetState(State::Home),>{"Home"}</button>
                     </div>
                 }
             }

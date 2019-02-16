@@ -1,0 +1,59 @@
+.center {
+    width: 100%;
+    text-align: center;
+    padding: 5px;
+}
+
+.button {
+    background-color: #8080ff;
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 80px;
+    margin: 10px 10px;
+    cursor: pointer;
+    width: 90%;
+}
+
+.font {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.image {
+    width: 90%;
+}
+
+.question {
+    height: 30%;
+    width: 90%;
+    font-size: 80px;
+    margin: 30px 50px;
+    color: black;
+}
+
+.title {
+    width: 90%;
+    font-size: 100px;
+    margin: auto;
+}
+
+.entry {
+    background-color: white;
+    border-width: 10px;
+    border-color: #8080ff;
+    text-align: center;
+    font-size: 80px;
+    margin: 4px 4px;
+    cursor: pointer;
+    width: 90%;
+}
+
+.home {
+    background-color: #ff8000;
+}
+
+.answered {
+    background-color: #c040c0;
+}
