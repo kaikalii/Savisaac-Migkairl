@@ -348,7 +348,8 @@ impl Renderable<Model> for Model {
                                     "Come up with familial relations that relate all of the \
                                      other players, i.e. Miguel is Carl's dad. For the rest \
                                      of the game, other players must speak to eachother as if \
-                                     they are actually related in the way you define."
+                                     they are actually related in the way you define. Anyone \
+                                     who does not adhear must drink."
                                 }</div>
                             },
                             Guest => html! {
